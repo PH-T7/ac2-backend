@@ -165,6 +165,17 @@
       <div id="msg-cons" class="status-msg" style="display:none"></div>
     </div>
 
+   <!-- Cadastrar vacina -->
+    <div class="card">
+      <h3>💉 Registrar Vacina</h3>
+      <div class="form-group"><label>ID da Consulta</label><input id="vac-cons" type="number" placeholder="ID da consulta realizada"></div>
+      <div class="form-group"><label>Nome da Vacina</label><input id="vac-nome" placeholder="Ex: Antirrábica"></div>
+      <div class="form-group"><label>Lote</label><input id="vac-lote" placeholder="Lote 123"></div>
+      <div class="form-group"><label>Data Aplicação</label><input id="vac-data" type="date"></div>
+      <button class="btn-primary btn" onclick="registrarVacina()">Registrar Vacina</button>
+      <div id="msg-vac" class="status-msg" style="display:none"></div>
+    </div>
+
     <!-- Listar Consultas / Histórico -->
     <div class="card" style="grid-column: 1/-1">
       <h3>📋 Consultas & Histórico</h3>
@@ -364,6 +375,18 @@ async function historicoAnimal() {
   } catch(e) {
     document.getElementById('list-consultas').innerHTML = `<p style="color:#fc8181">❌ ${e.message}</p>`;
   }
+}
+ 
+ async function registrarVacina() {
+  try {
+    const d = await post(`${API2}/vacinas`, {
+      consultaId: parseInt(document.getElementById('vac-cons').value),
+      nome: document.getElementById('vac-nome').value,
+      lote: document.getElementById('vac-lote').value,
+      dataAplicacao: document.getElementById('vac-data').value
+    });
+    showMsg('msg-vac', `✅ Vacina "${d.nome}" registrada!`, true);
+  } catch(e) { showMsg('msg-vac', '❌ ' + e.message, false); }
 }
 
 // Carregar setores ao iniciar
