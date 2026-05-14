@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AC2 – Projetos & PetCare</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; min-height: 100vh; }
+  header { background: linear-gradient(135deg, #1a1f2e, #252d3d); padding: 20px 30px; border-bottom: 1px solid #2d3748; display: flex; align-items: center; gap: 16px; }
+  header h1 { font-size: 1.4rem; color: #63b3ed; }
+  .tabs { display: flex; gap: 8px; padding: 20px 30px 0; }
+  .tab { padding: 10px 24px; border-radius: 8px 8px 0 0; background: #1a1f2e; color: #718096; border: none; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; }
+  .tab.active { background: #2d3748; color: #63b3ed; border-bottom: 2px solid #63b3ed; }
+  .panel { display: none; padding: 24px 30px; }
+  .panel.active { display: block; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; }
+  .card { background: #1a1f2e; border: 1px solid #2d3748; border-radius: 12px; padding: 20px; }
+  .card h3 { color: #63b3ed; margin-bottom: 14px; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+  .form-group { margin-bottom: 12px; }
+  label { display: block; font-size: 0.8rem; color: #a0aec0; margin-bottom: 4px; }
+  input, select, textarea { width: 100%; padding: 8px 12px; background: #0f1117; border: 1px solid #2d3748; border-radius: 6px; color: #e2e8f0; font-size: 0.9rem; }
+  input:focus, select:focus { outline: none; border-color: #63b3ed; }
+  btn { display: inline-block; padding: 9px 18px; border-radius: 7px; border: none; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; }
+  .btn-primary { background: #3182ce; color: white; }
+  .btn-primary:hover { background: #2b6cb0; }
+  .btn-success { background: #38a169; color: white; }
+  .btn-success:hover { background: #2f855a; }
+  .btn-danger { background: #e53e3e; color: white; }
+  .list-box { margin-top: 14px; max-height: 280px; overflow-y: auto; }
+  .list-item { background: #252d3d; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; font-size: 0.85rem; line-height: 1.6; }
+  .list-item strong { color: #90cdf4; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+  .badge-blue { background: #2b6cb0; color: #bee3f8; }
+  .badge-green { background: #276749; color: #9ae6b4; }
+  .badge-red { background: #742a2a; color: #fed7d7; }
+  .badge-yellow { background: #744210; color: #fefcbf; }
+  .status-msg { margin-top: 10px; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; }
+  .status-ok { background: #1c4532; color: #9ae6b4; }
+  .status-err { background: #742a2a; color: #fed7d7; }
+  .section-title { font-size: 1.3rem; font-weight: 700; color: #90cdf4; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #2d3748; }
+  button { cursor: pointer; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>🎓 AC2 — Sistemas Backend</h1>
+    <p style="color:#718096;font-size:0.8rem">Projetos (porta 8080) &nbsp;|&nbsp; PetCare (porta 8081)</p>
+  </div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('projetos')">📁 Parte 1 – Projetos</button>
+  <button class="tab" onclick="switchTab('petcare')">🐾 Parte 2 – PetCare</button>
+</div>
+
+<!-- ===== PARTE 1: PROJETOS ===== -->
+<div id="panel-projetos" class="panel active">
+  <div class="section-title">📁 Sistema de Controle de Projetos</div>
+  <div class="grid">
+
+    <!-- Cadastrar Setor -->
+    <div class="card">
+      <h3>🏢 Cadastrar Setor</h3>
+      <div class="form-group"><label>Nome do Setor</label><input id="setor-nome" placeholder="Ex: Tecnologia"></div>
+      <button class="btn-primary btn" onclick="cadastrarSetor()">Cadastrar</button>
+      <div id="msg-setor" class="status-msg" style="display:none"></div>
+      <div class="list-box" id="list-setores"></div>
+    </div>
+
+    <!-- Cadastrar Funcionário -->
+    <div class="card">
+      <h3>👤 Cadastrar Funcionário</h3>
+      <div class="form-group"><label>Nome</label><input id="func-nome" placeholder="Nome completo"></div>
+      <div class="form-group"><label>ID do Setor</label><input id="func-setor" type="number" placeholder="ID do setor"></div>
+      <button class="btn-primary btn" onclick="cadastrarFuncionario()">Cadastrar</button>
+      <div id="msg-func" class="status-msg" style="display:none"></div>
+    </div>
+
+    <!-- Cadastrar Projeto -->
+    <div class="card">
+      <h3>📋 Cadastrar Projeto</h3>
+      <div class="form-group"><label>Descrição</label><input id="proj-desc" placeholder="Descrição do projeto"></div>
+      <div class="form-group"><label>Data Início</label><input id="proj-inicio" type="date"></div>
+      <div class="form-group"><label>Data Fim</label><input id="proj-fim" type="date"></div>
+      <button class="btn-primary btn" onclick="cadastrarProjeto()">Cadastrar</button>
+      <div id="msg-proj" class="status-msg" style="display:none"></div>
+    </div>
+
+    <!-- Vincular Funcionário ao Projeto -->
+    <div class="card">
+      <h3>🔗 Vincular Funcionário ↔ Projeto</h3>
+      <div class="form-group"><label>ID do Projeto</label><input id="vinc-proj" type="number" placeholder="ID do projeto"></div>
+      <div class="form-group"><label>ID do Funcionário</label><input id="vinc-func" type="number" placeholder="ID do funcionário"></div>
+      <button class="btn-success btn" onclick="vincularFuncionario()">Vincular</button>
+      <div id="msg-vinc" class="status-msg" style="display:none"></div>
+    </div>
+
+    <!-- Listar Projetos -->
+    <div class="card" style="grid-column: 1/-1">
+      <h3>📊 Lista de Projetos (com Funcionários)</h3>
+      <button class="btn-primary btn" onclick="listarProjetos()">🔄 Atualizar Lista</button>
+      <div class="list-box" id="list-projetos"><p style="color:#718096;padding:10px">Clique em Atualizar Lista</p></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== PARTE 2: PETCARE ===== -->
+<div id="panel-petcare" class="panel">
+  <div class="section-title">🐾 Sistema PetCare</div>
+  <div class="grid">
+
+    <!-- Cadastrar Tutor -->
+    <div class="card">
+      <h3>👨‍👩‍👧 Cadastrar Tutor</h3>
+      <div class="form-group"><label>Nome</label><input id="tutor-nome" placeholder="Nome completo"></div>
+      <div class="form-group"><label>Telefone</label><input id="tutor-tel" placeholder="(11) 99999-0000"></div>
+      <div class="form-group"><label>Email</label><input id="tutor-email" type="email" placeholder="email@exemplo.com"></div>
+      <button class="btn-primary btn" onclick="cadastrarTutor()">Cadastrar</button>
+      <div id="msg-tutor" class="status-msg" style="display:none"></div>
+    </div>
+
+    <!-- Cadastrar Animal -->
+    <div class="card">
+      <h3>🐶 Cadastrar Animal</h3>
+      <div class="form-group"><label>Nome do Animal</label><input id="animal-nome" placeholder="Ex: Rex"></div>
+      <div class="form-group"><label>Espécie</label><input id="animal-especie" placeholder="Cão, Gato, etc."></div>
+      <div class="form-group"><label>Raça</label><input id="animal-raca" placeholder="Labrador, Persa..."></div>
+      <div class="form-group"><label>Idade</label><input id="animal-idade" type="number" placeholder="Idade em anos"></div>
+      <div class="form-group"><label>ID do Tutor</label><input id="animal-tutor" type="number" placeholder="ID do tutor"></div>
+      <button class="btn-success btn" onclick="cadastrarAnimal()">Cadastrar</button>
+      <div id="msg-animal" class="status-msg" style="display:none"></div>
+    </div>
+
+    <!-- Cadastrar Veterinário -->
+    <div class="card">
+      <h3>🩺 Cadastrar Veterinário</h3>
+      <div class="form-group"><label>Nome</label><input id="vet-nome" placeholder="Dr. Nome"></div>
+      <div class="form-group"><label>CRMV</label><input id="vet-crmv" placeholder="SP-12345"></div>
+      <div class="form-group"><label>Especialidade</label>
+        <select id="vet-esp">
+          <option value="CLINICO_GERAL">Clínico Geral</option>
+          <option value="FELINO">Felino (Gatos)</option>
+          <option value="CANINO">Canino (Cães)</option>
+          <option value="EXOTICO">Exótico</option>
+          <option value="CIRURGIAO">Cirurgião</option>
+          <option value="DERMATOLOGISTA">Dermatologista</option>
+          <option value="ORTOPEDISTA">Ortopedista</option>
+        </select>
+      </div>
+      <button class="btn-primary btn" onclick="cadastrarVet()">Cadastrar</button>
+      <div id="msg-vet" class="status-msg" style="display:none"></div>
+    </div>
+
+    <!-- Agendar Consulta -->
+    <div class="card">
+      <h3>📅 Agendar Consulta</h3>
+      <div class="form-group"><label>ID do Animal</label><input id="cons-animal" type="number" placeholder="ID do animal"></div>
+      <div class="form-group"><label>ID do Veterinário</label><input id="cons-vet" type="number" placeholder="ID do veterinário"></div>
+      <div class="form-group"><label>Data e Hora</label><input id="cons-data" type="datetime-local"></div>
+      <div class="form-group"><label>Motivo</label><input id="cons-motivo" placeholder="Motivo da consulta"></div>
+      <button class="btn-success btn" onclick="agendarConsulta()">Agendar</button>
+      <div id="msg-cons" class="status-msg" style="display:none"></div>
+    </div>
+
+    <!-- Listar Consultas / Histórico -->
+    <div class="card" style="grid-column: 1/-1">
+      <h3>📋 Consultas & Histórico</h3>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="btn-primary btn" onclick="listarConsultas()">🔄 Todas as Consultas</button>
+        <span style="color:#718096;align-self:center">Histórico por animal: ID</span>
+        <input id="hist-animal-id" type="number" placeholder="ID animal" style="width:100px">
+        <button class="btn-primary btn" onclick="historicoAnimal()">Buscar Histórico</button>
+      </div>
+      <div class="list-box" id="list-consultas"><p style="color:#718096;padding:10px">Clique para carregar</p></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API1 = 'http://localhost:8080/api';
+const API2 = 'http://localhost:8081/api';
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+function showMsg(id, text, ok) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'status-msg ' + (ok ? 'status-ok' : 'status-err');
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+
+async function post(url, data) {
+  const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
+  const json = await r.json();
+  if (!r.ok) throw new Error(json.mensagem || JSON.stringify(json));
+  return json;
+}
+
+async function get(url) {
+  const r = await fetch(url);
+  const json = await r.json();
+  if (!r.ok) throw new Error(json.mensagem || JSON.stringify(json));
+  return json;
+}
+
+// ===== PROJETOS =====
+async function cadastrarSetor() {
+  try {
+    const d = await post(`${API1}/setores`, { nome: document.getElementById('setor-nome').value });
+    showMsg('msg-setor', `✅ Setor "${d.nome}" criado (ID: ${d.id})`, true);
+    listarSetores();
+  } catch(e) { showMsg('msg-setor', '❌ ' + e.message, false); }
+}
+
+async function listarSetores() {
+  try {
+    const data = await get(`${API1}/setores`);
+    document.getElementById('list-setores').innerHTML = data.map(s =>
+      `<div class="list-item"><strong>#${s.id}</strong> ${s.nome} <span class="badge badge-blue">${s.funcionarios?.length || 0} funcionários</span></div>`
+    ).join('') || '<p style="color:#718096">Nenhum setor cadastrado</p>';
+  } catch(e) {}
+}
+
+async function cadastrarFuncionario() {
+  try {
+    const d = await post(`${API1}/funcionarios`, {
+      nome: document.getElementById('func-nome').value,
+      setorId: parseInt(document.getElementById('func-setor').value)
+    });
+    showMsg('msg-func', `✅ Funcionário "${d.nome}" criado (ID: ${d.id}) - Setor: ${d.setorNome}`, true);
+  } catch(e) { showMsg('msg-func', '❌ ' + e.message, false); }
+}
+
+async function cadastrarProjeto() {
+  try {
+    const d = await post(`${API1}/projetos`, {
+      descricao: document.getElementById('proj-desc').value,
+      dataInicio: document.getElementById('proj-inicio').value,
+      dataFim: document.getElementById('proj-fim').value
+    });
+    showMsg('msg-proj', `✅ Projeto "${d.descricao}" criado (ID: ${d.id})`, true);
+    listarProjetos();
+  } catch(e) { showMsg('msg-proj', '❌ ' + e.message, false); }
+}
+
+async function vincularFuncionario() {
+  try {
+    const pId = document.getElementById('vinc-proj').value;
+    const fId = document.getElementById('vinc-func').value;
+    const d = await post(`${API1}/projetos/${pId}/funcionarios/${fId}`, {});
+    showMsg('msg-vinc', `✅ Funcionário vinculado ao projeto "${d.descricao}"`, true);
+    listarProjetos();
+  } catch(e) { showMsg('msg-vinc', '❌ ' + e.message, false); }
+}
+
+async function listarProjetos() {
+  try {
+    const data = await get(`${API1}/projetos`);
+    document.getElementById('list-projetos').innerHTML = data.length ? data.map(p =>
+      `<div class="list-item">
+        <strong>#${p.id}</strong> ${p.descricao}<br>
+        📅 ${p.dataInicio} → ${p.dataFim}<br>
+        👥 Funcionários: ${p.funcionarios?.map(f => f.nome).join(', ') || 'Nenhum'}
+      </div>`
+    ).join('') : '<p style="color:#718096;padding:10px">Nenhum projeto cadastrado</p>';
+  } catch(e) {
+    document.getElementById('list-projetos').innerHTML = `<p style="color:#fc8181">❌ Erro: ${e.message}</p>`;
+  }
+}
+
+// ===== PETCARE =====
+async function cadastrarTutor() {
+  try {
+    const d = await post(`${API2}/tutores`, {
+      nome: document.getElementById('tutor-nome').value,
+      telefone: document.getElementById('tutor-tel').value,
+      email: document.getElementById('tutor-email').value
+    });
+    showMsg('msg-tutor', `✅ Tutor "${d.nome}" criado (ID: ${d.id})`, true);
+  } catch(e) { showMsg('msg-tutor', '❌ ' + e.message, false); }
+}
+
+async function cadastrarAnimal() {
+  try {
+    const d = await post(`${API2}/animais`, {
+      nome: document.getElementById('animal-nome').value,
+      especie: document.getElementById('animal-especie').value,
+      raca: document.getElementById('animal-raca').value,
+      idade: parseInt(document.getElementById('animal-idade').value),
+      tutorId: parseInt(document.getElementById('animal-tutor').value)
+    });
+    showMsg('msg-animal', `✅ Animal "${d.nome}" (${d.especie}) cadastrado (ID: ${d.id}) - Tutor: ${d.tutorNome}`, true);
+  } catch(e) { showMsg('msg-animal', '❌ ' + e.message, false); }
+}
+
+async function cadastrarVet() {
+  try {
+    const d = await post(`${API2}/veterinarios`, {
+      nome: document.getElementById('vet-nome').value,
+      crmv: document.getElementById('vet-crmv').value,
+      especialidade: document.getElementById('vet-esp').value
+    });
+    showMsg('msg-vet', `✅ Vet. "${d.nome}" (${d.especialidade}) criado (ID: ${d.id})`, true);
+  } catch(e) { showMsg('msg-vet', '❌ ' + e.message, false); }
+}
+
+async function agendarConsulta() {
+  try {
+    const d = await post(`${API2}/consultas`, {
+      animalId: parseInt(document.getElementById('cons-animal').value),
+      veterinarioId: parseInt(document.getElementById('cons-vet').value),
+      dataHora: document.getElementById('cons-data').value + ':00',
+      motivo: document.getElementById('cons-motivo').value
+    });
+    showMsg('msg-cons', `✅ Consulta agendada (ID: ${d.id}) - ${d.animalNome} com Dr. ${d.veterinarioNome}`, true);
+    listarConsultas();
+  } catch(e) { showMsg('msg-cons', '❌ ' + e.message, false); }
+}
+
+async function listarConsultas() {
+  try {
+    const data = await get(`${API2}/consultas`);
+    const statusBadge = s => {
+      if (s === 'AGENDADA') return '<span class="badge badge-blue">AGENDADA</span>';
+      if (s === 'REALIZADA') return '<span class="badge badge-green">REALIZADA</span>';
+      return '<span class="badge badge-red">CANCELADA</span>';
+    };
+    document.getElementById('list-consultas').innerHTML = data.length ? data.map(c =>
+      `<div class="list-item">
+        <strong>#${c.id}</strong> ${statusBadge(c.status)}<br>
+        🐾 ${c.animalNome} | 🩺 Dr. ${c.veterinarioNome} (${c.especialidade})<br>
+        📅 ${c.dataHora?.replace('T', ' ')}<br>
+        📝 ${c.motivo}
+        ${c.diagnostico ? `<br>🔬 Diagnóstico: ${c.diagnostico}` : ''}
+      </div>`
+    ).join('') : '<p style="color:#718096;padding:10px">Nenhuma consulta cadastrada</p>';
+  } catch(e) {
+    document.getElementById('list-consultas').innerHTML = `<p style="color:#fc8181">❌ Erro: ${e.message}</p>`;
+  }
+}
+
+async function historicoAnimal() {
+  const id = document.getElementById('hist-animal-id').value;
+  if (!id) return;
+  try {
+    const data = await get(`${API2}/consultas/animal/${id}`);
+    document.getElementById('list-consultas').innerHTML = data.length ? data.map(c =>
+      `<div class="list-item">
+        <strong>#${c.id}</strong> 📅 ${c.dataHora?.replace('T',' ')} | 🩺 Dr. ${c.veterinarioNome}<br>
+        📝 ${c.motivo} ${c.diagnostico ? '| 🔬 ' + c.diagnostico : ''}
+        ${c.vacinas?.length ? '<br>💉 Vacinas: ' + c.vacinas.map(v=>v.nome).join(', ') : ''}
+      </div>`
+    ).join('') : '<p style="color:#718096;padding:10px">Nenhuma consulta para este animal</p>';
+  } catch(e) {
+    document.getElementById('list-consultas').innerHTML = `<p style="color:#fc8181">❌ ${e.message}</p>`;
+  }
+}
+
+// Carregar setores ao iniciar
+listarSetores();
+</script>
+</body>
+</html>
